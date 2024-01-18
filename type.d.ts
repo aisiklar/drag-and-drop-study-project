@@ -32,3 +32,12 @@ interface Company {
   catchPhrase: string;
   bs: string;
 }
+
+type headerColumns = headerColumn[];
+
+type headerColumn = {
+  header: string;
+  rowSpan: number;
+  colSpan: number;
+  subHeader?: string[];
+};
