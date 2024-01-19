@@ -17,6 +17,7 @@ export default function UsersTable({ users }: Props) {
   // define the column headers
 
   let headerColumns: object[] = [];
+  let columnsMapped: object[] = [];
 
   for (let key in users[0]) {
     // console.log("key: ", key);
@@ -28,6 +29,7 @@ export default function UsersTable({ users }: Props) {
         rowSpan: 1,
         colSpan: Object.keys(users[0][key as keyof User]).length,
       });
+      columnsMapped.push([key, ...Object.keys(users[0][key as keyof User])]);
 
       // console.log("added to headerColumns: ", {
       //   [key]: Object.keys(users[0][key as keyof User]),
@@ -38,6 +40,7 @@ export default function UsersTable({ users }: Props) {
         rowSpan: 2,
         colSpan: 1,
       });
+      columnsMapped.push(key);
       // console.log("added to headerColumns: ", {
       // [key]: users[0][key as keyof User],
       // });
@@ -49,11 +52,12 @@ export default function UsersTable({ users }: Props) {
     // console.log("keys of headerColumns:", Object.keys(headerColumns[i]));
   }
   console.log("headerColumns:", headerColumns);
+  console.log("columnsMapped: ", columnsMapped);
 
   headerColumns.forEach((item, index) => {
-    console.log(item as headerColumn);
-    console.log(Object.keys(item));
-    console.log((item as headerColumn)["header"]);
+    // console.log(item as headerColumn);
+    // console.log(Object.keys(item));
+    // console.log((item as headerColumn)["header"]);
     // console.log(item[header as keyof item]);
   });
 
@@ -91,7 +95,9 @@ export default function UsersTable({ users }: Props) {
             )}
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+
+        </tbody>
       </table>
     </>
   );
