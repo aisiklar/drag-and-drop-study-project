@@ -1,3 +1,5 @@
+import { SubresourceIntegrityPlugin } from "next/dist/build/webpack/plugins/subresource-integrity-plugin";
+
 type Topic = { topicName: string; link: string };
 type Topics = Topic[];
 
@@ -33,11 +35,17 @@ interface Company {
   bs: string;
 }
 
-type headerColumns = headerColumn[];
+type HeaderColumns = HeaderColumn[];
 
-type headerColumn = {
+type HeaderColumn = {
   header: string;
   rowSpan: number;
   colSpan: number;
   subHeader?: string[];
 };
+type ColumnMapped = {
+  prop: string;
+  subProp?: string;
+};
+
+type ColumnsMapped = ColumnMapped[];
