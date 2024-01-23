@@ -7,6 +7,10 @@ export default async function TableOneHome() {
 
   const users= await response.json();
 
+  users.forEach((user: any)=> {
+    delete user.company
+    delete user.address
+  })
   console.log("users from API: ", users);
   return (
     <>
