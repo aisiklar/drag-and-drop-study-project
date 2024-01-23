@@ -26,52 +26,24 @@ export default function UsersTable({ users }: Props) {
 
   let headerColumns: HeaderColumns = [];
   let columnsMapped: ColumnsMapped = [];
+  let columnsMapped2: object[] = [];
 
-  for (let key in users[0]) {
-    // console.log("key: ", key);
-    // if the user attribute is an object
-    if (typeof users[0][key as keyof User] === "object") {
-      // console.log("users[0][key] is an object");
-      headerColumns.push({
-        header: key,
-        subHeader: Object.keys(users[0][key as keyof User]),
-        rowSpan: 1,
-        colSpan: Object.keys(users[0][key as keyof User]).length,
-      });
-
-      for (let subProp of Object.keys(users[0][key as keyof User])) {
-        columnsMapped.push({ prop: key, subProp: subProp });
+  function measureDepth(obj: object, depth: number) {
+    for (let key in obj) {
+      console.log("key: ", key);
+      if (typeof obj[key as keyof object] === "object") {
+        depth++;
+        measureDepth(obj[key as keyof object], depth);
       }
-
-      // console.log("added to headerColumns: ", {
-      //   [key]: Object.keys(users[0][key as keyof User]),
-      // });
-    } else {
-      headerColumns.push({
-        header: key,
-        rowSpan: 2,
-        colSpan: 1,
-      });
-      columnsMapped.push({ prop: key });
-      // console.log("added to headerColumns: ", {
-      // [key]: users[0][key as keyof User],
-      // });
     }
+    return depth;
   }
 
-  for (let i in headerColumns) {
-    // console.log("i: ", i);
-    // console.log("keys of headerColumns:", Object.keys(headerColumns[i]));
-  }
-  console.log("headerColumns:", headerColumns);
-  console.log("columnsMapped: ", columnsMapped);
+  
 
-  headerColumns.forEach((item, index) => {
-    // console.log(item as headerColumn);
-    // console.log(Object.keys(item));
-    // console.log((item as headerColumn)["header"]);
-    // console.log(item[header as keyof item]);
-  });
+
+  let depth = measureDepth(users[0], 1);
+  console.log("depth:", depth);
 
   return (
     <>
@@ -91,7 +63,7 @@ export default function UsersTable({ users }: Props) {
                     : " px-[20px] "
                 }
               >
-                {(item as HeaderColumn)["header"][0]}
+                {(item as HeaderColumn)["header"]}
               </th>
             ))}
           </tr>
@@ -108,34 +80,17 @@ export default function UsersTable({ users }: Props) {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, userIndex) => {
-            console.log("user: ", user);
-            console.log("userIndex: ", userIndex);
-            return (
-              <tr key={userIndex}>
-                {columnsMapped.map((column, index) => {
-                  console.log("column: ", column);
-                  console.log(
-                    "column.prop/column.subProp: ",
-                    column.prop,
-                    column.subProp
-                  );
-                  let prop = column.prop;
-                  let subProp = column.subProp;
-                  console.log(
-                    "user.xxx",
-                    subProp ? user[prop][subProp] : user[prop]
-                  );
-                  console.log("index: ", index);
-                  return column.subProp ? (
-                    <td key={index}>{{user[prop][subProp]}}</td>
-                  ) : (
-                    <td key={index}> {user[prop]} </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {users.map((user, index) => (
+            <tr key={index}>
+              {columnsMapped2.map((item, cIndex) => (
+                <td key={cIndex}>
+                  {item.prop.length === 1
+                    ? user[item.prop[0]]
+                    : "2" + user[item.prop[0][item.prop[1]]]}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
