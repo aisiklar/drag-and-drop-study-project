@@ -5,6 +5,7 @@ import BoxWrapper from "./BoxWrapper";
 
 type SubBoxConfig = {
   draggedElementOver: boolean;
+  renderCounter: number;
 };
 
 type BoxConfig = {
@@ -16,12 +17,15 @@ type BoxConfig = {
 const boxConfig = {
   A: {
     draggedElementOver: false,
+    renderCounter: 0,
   },
   B: {
     draggedElementOver: false,
+    renderCounter: 0,
   },
   C: {
     draggedElementOver: false,
+    renderCounter: 0,
   },
 };
 
@@ -44,10 +48,9 @@ export default function DraggedBoxes() {
     },
   ];
 
-  const [draggableOverElement, setDraggableOverElement] =
-    useState<boolean>(false);
-
-  const [wrapperBoxState, setWrapperBoxState] = useState<BoxConfig>(boxConfig);
+  const [wrapperBoxState, setWrapperBoxState] = useState<BoxConfig>(
+    JSON.parse(JSON.stringify(boxConfig))
+  );
 
   function onDragEnterHandler(e: any, region: string) {
     e.preventDefault();
@@ -55,23 +58,35 @@ export default function DraggedBoxes() {
       "onDragEnterHandler triggered, on a valid drop area...",
       region
     );
-    setDraggableOverElement(true);
 
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
 
     temp[region].draggedElementOver = true;
+    temp[region].renderCounter++;
+
     setWrapperBoxState(temp);
   }
-  function onDropHandler() {
-    console.log("onDropHandler triggered");
+
+  function onDropHandler(e: any, region: string) {
+    console.log("onDropHandler triggered, region: ", region);
   }
+
   function onDragLeaveHandler(e: any, region: string) {
     console.log("onDropLeaveHandler function tiggered", region);
-    setDraggableOverElement(false);
+
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
     temp[region].draggedElementOver = false;
+    temp[region].renderCounter--;
     setWrapperBoxState(temp);
   }
+
+  function onDragEndHandler() {
+    console.log("onDragEndHandler triggered");
+    console.log("boxConfig: ", boxConfig);
+    setWrapperBoxState(JSON.parse(JSON.stringify(boxConfig)));
+  }
+
+  console.log("wrapperBoxState", wrapperBoxState);
 
   return (
     <div className="flex justify-center mt-4">
@@ -89,9 +104,14 @@ export default function DraggedBoxes() {
               ? (e) => onDragLeaveHandler(e, boxWrapper.region)
               : () => null
           }
-          onDrop={onDropHandler}
+          onDrop={(e) => onDropHandler(e, boxWrapper.region)}
+          onDragEnd={onDragEndHandler}
         >
           <BoxWrapper
+            key={
+              wrapperBoxState[boxWrapper.region as keyof BoxConfig]
+                .renderCounter
+            }
             boxWrapper={boxWrapper}
             draggableOverElement={
               wrapperBoxState[boxWrapper.region as keyof BoxConfig]

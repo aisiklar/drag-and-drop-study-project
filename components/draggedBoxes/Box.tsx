@@ -8,7 +8,7 @@ type Props = {
 export default function Box(props: Props) {
   const [beingDragged, setBeingDragged] = useState<boolean>(false);
 
-  console.log("beingDragged: ", beingDragged);
+  // console.log("beingDragged: ", beingDragged);
 
   function onDragStartHandler() {
     console.log("in onDragStartHandler");
