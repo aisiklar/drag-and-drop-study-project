@@ -53,13 +53,17 @@ export default function UsersTable({ users }: Props) {
 
   return (
     <>
-      <table>
+      <table className="w-full">
         <thead>
           {/* the number of <tr></tr> can be defined from the data structure. */}
           {/* however here it is assumed fix and x2 */}
           <tr>
             {headerColumns.map((item, index) => (
-              <th key={index} className={" px-[20px] border-b-2 "}>
+              <th
+                key={index}
+                className={" px-[20px] border-b-2 text-center"}
+                draggable={true}
+              >
                 {item}
               </th>
             ))}
@@ -69,8 +73,8 @@ export default function UsersTable({ users }: Props) {
           {users.map((user, index) => (
             <tr key={index}>
               {headerColumns.map((column, cIndex) => (
-                <td key={cIndex} className="p-[20px]">
-                  {user[column as keyof User]}
+                <td key={cIndex} className="p-[10px] text-center">
+                  x{user[column as keyof User]}
                 </td>
               ))}
             </tr>
