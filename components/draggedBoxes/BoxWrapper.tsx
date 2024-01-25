@@ -30,7 +30,12 @@ export default function BoxWrapper(props: Props) {
         {boxWrapper.droppable ? "droppable" : "un-droppable"}
       </p>
       {boxWrapper.contents.map((boxName, bIndex) => (
-        <Box key={bIndex} text={boxName} />
+        <Box
+          onDragStart={(e: any) => onDragStartHandler(e, boxName)}
+          id={boxName}
+          key={bIndex}
+          text={boxName}
+        />
       ))}
     </div>
   );
