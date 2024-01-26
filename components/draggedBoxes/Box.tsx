@@ -9,7 +9,6 @@ type Props = {
 type DraggedType = {
   box: string;
   beingDragged: boolean;
-  onDragStart: (e) => void
 };
 
 export default function Box(props: Props) {
@@ -22,7 +21,7 @@ export default function Box(props: Props) {
   // console.log("beingDragged: ", beingDragged);
 
   function onDragStartHandler() {
-    // console.log("in onDragStartHandler, ", props.text);
+    console.log("in onDragStartHandler, ", props.text);
     setBeingDragged({ box: props.text, beingDragged: true });
   }
   function onDragEndHandler() {
@@ -35,6 +34,7 @@ export default function Box(props: Props) {
       draggable={true}
       onDragStart={onDragStartHandler}
       onDragEnd={onDragEndHandler}
+      id={props.text}
       className={
         beingDragged.beingDragged
           ? "bg-slate-500 w-[200px] border rounded my-[30px]"

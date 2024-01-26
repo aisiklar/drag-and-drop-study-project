@@ -41,17 +41,17 @@ let boxList = [
   {
     region: "A",
     droppable: true,
-    contents: ["A"],
+    contents: ["A", "B"],
   },
   {
     region: "B",
     droppable: false,
-    contents: ["D"],
+    contents: ["D", "E"],
   },
   {
     region: "C",
     droppable: true,
-    contents: ["G"],
+    contents: ["G", "H"],
   },
 ];
 
@@ -88,6 +88,7 @@ export default function DraggedBoxes() {
 
   // in case of onDrag event,
   // change the draggedElementOver to true for related BoxWrapper
+  // so that the color of the BoxWrapper comp changes to red
   function onDragOver(e: any, region: string) {
     console.log("onDragOver function triggered ", region);
     e.preventDefault();
@@ -103,6 +104,7 @@ export default function DraggedBoxes() {
     // reset wrapperBoxState to its to initial state of boxConfig
     setWrapperBoxState(JSON.parse(JSON.stringify(boxConfig)));
   }
+
   function onDragStartHandler(e: any, region: string) {
     console.log("onDragStartHandler triggered, ", region);
   }
@@ -110,37 +112,52 @@ export default function DraggedBoxes() {
   console.log("wrapperBoxState", wrapperBoxState);
 
   return (
-    <div className="flex justify-center mt-4">
-      {boxList.map((boxWrapper, index) => (
-        <div
-          key={index}
-          onDragStart={(e) => onDragStartHandler(e, boxWrapper.region)}
-          onDragLeave={
-            boxWrapper.droppable
-              ? (e) => onDragLeaveHandler(e, boxWrapper.region)
-              : () => null
-          }
-          onDragOver={
-            boxWrapper.droppable
-              ? (e) => onDragOver(e, boxWrapper.region)
-              : () => null
-          }
-          onDrop={(e) => onDropHandler(e, boxWrapper.region)}
-          onDragEnd={onDragEndHandler}
-        >
-          <BoxWrapper
-            /*  key={
+    <div className="flex-column items-center justify-center">
+      <div className="flex justify-center mt-4">
+        {boxList.map((boxWrapper, index) => (
+          <div
+            key={index}
+            onDragStart={(e) => onDragStartHandler(e, boxWrapper.region)}
+            onDragLeave={
+              boxWrapper.droppable
+                ? (e) => onDragLeaveHandler(e, boxWrapper.region)
+                : () => null
+            }
+            onDragOver={
+              boxWrapper.droppable
+                ? (e) => onDragOver(e, boxWrapper.region)
+                : () => null
+            }
+            onDrop={(e) => onDropHandler(e, boxWrapper.region)}
+            onDragEnd={onDragEndHandler}
+          >
+            <BoxWrapper
+              /*  key={
               wrapperBoxState[boxWrapper.region as keyof BoxConfig]
                 .renderCounter
             } */
-            boxWrapper={boxWrapper}
-            draggableOverElement={
-              wrapperBoxState[boxWrapper.region as keyof BoxConfig]
-                .draggedElementOver
-            }
-          />
-        </div>
-      ))}
+              boxWrapper={boxWrapper}
+              draggableOverElement={
+                wrapperBoxState[boxWrapper.region as keyof BoxConfig]
+                  .draggedElementOver
+              }
+            />
+          </div>
+        ))}
+      </div>
+      <div className="mt-[100px] p-2 w-[350px] m-auto flex-column items-center border">
+        <p className=" align-middle">Contents of the Regions (for review):</p>
+        {boxList.map((boxWrapper, index) => (
+          <ul key={index}>
+            <strong> region - {boxWrapper.region}</strong>
+            {boxWrapper.contents.map((item, sIndex) => (
+              <ul className="ml-2" key={sIndex}>
+                box - {item}
+              </ul>
+            ))}
+          </ul>
+        ))}
+      </div>
     </div>
   );
 }
