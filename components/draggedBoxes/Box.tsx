@@ -25,7 +25,7 @@ export default function Box(props: Props) {
     setBeingDragged({ box: props.text, beingDragged: true });
   }
   function onDragEndHandler() {
-    // console.log("in onDragEndHandler, ", props.text);
+    console.log("in onDragEndHandler, ", props.text);
     setBeingDragged({ box: props.text, beingDragged: false });
   }
 

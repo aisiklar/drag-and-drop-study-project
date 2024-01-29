@@ -9,6 +9,7 @@ type Props = {
     contents: string[];
   };
   draggableOverElement: boolean;
+  getData: (data: any) => void;
 };
 export default function BoxWrapper(props: Props) {
   let boxWrapper = props.boxWrapper;
@@ -25,7 +26,9 @@ export default function BoxWrapper(props: Props) {
     );
     console.log("onDragStartHandler, e.target.id)", e.target.id);
     let draggedObject = e.target.id;
-    e.dataTransfer.setData("text/plain", draggedObject);
+    // e.dataTransfer.setData("text/plain", draggedObject);
+    // send data to parent comp. DraggedBoxes
+    props.getData(draggedObject);
   }
 
   function onDropHandler(e: any) {
@@ -43,8 +46,8 @@ export default function BoxWrapper(props: Props) {
       onDrop={(e: any) => onDropHandler(e)}
       className={
         draggableOverElement
-          ? "p-2 bg-red-300 text-center ml-4 "
-          : "p-2 bg-slate-300 text-center ml-4"
+          ? "p-2 bg-red-300 text-center ml-4 min-h-[200px]"
+          : "p-2 bg-slate-300 text-center ml-4 min-h-[200px]"
       }
     >
       <p>

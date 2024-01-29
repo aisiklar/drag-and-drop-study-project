@@ -61,6 +61,8 @@ export default function DraggedBoxes() {
     JSON.parse(JSON.stringify(boxConfig))
   );
 
+  const [draggedBox, setDraggedBox] = useState<string>("");
+
   /* function onDragEnterHandler(e: any, region: string) {
     console.log(
       "onDragEnterHandler triggered, on a valid drop area...",
@@ -75,10 +77,40 @@ export default function DraggedBoxes() {
 
   function onDropHandler(e: any, region: string) {
     console.log("onDropHandler triggered, region: ", region);
+    let targetWrapperBox = boxArrangement.filter(
+      (boxWrapper) => boxWrapper.region === region
+    )[0];
+    console.log("targetWrapperBox: ", targetWrapperBox);
+
+    let sourceWrapperBox = boxArrangement.filter((wrapperBox) =>
+      wrapperBox.contents.includes(draggedBox)
+    )[0];
+    let indexOfDraggedBox = sourceWrapperBox.contents.indexOf(draggedBox);
+    console.log("indexOfDraggedBox: ", indexOfDraggedBox);
+
+    console.log("sourceWrapperBox: ", sourceWrapperBox);
+
+    let temp_boxArrangement = JSON.parse(JSON.stringify(boxArrangement));
+    temp_boxArrangement.forEach((element: EachBox) => {
+      if (element.contents.includes(draggedBox)) {
+        let newContents = element.contents.filter(
+          (item: string) => item !== draggedBox
+        );
+        console.log("newContents: ", newContents);
+        element.contents = newContents;
+      }
+      if (element.region === region) {
+        element.contents.push(draggedBox);
+      }
+    });
+    console.log("temp_boxArrangement:", temp_boxArrangement);
+
+    setDraggedBox("");
+    setBoxArrangement(temp_boxArrangement);
   }
 
   function onDragLeaveHandler(e: any, region: string) {
-    console.log("onDropLeaveHandler function tiggered", region);
+    console.log("onDragLeaveHandler function tiggered", region);
 
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
     temp[region].draggedElementOver = false;
@@ -89,8 +121,8 @@ export default function DraggedBoxes() {
   // in case of onDrag event,
   // change the draggedElementOver to true for related BoxWrapper
   // so that the color of the BoxWrapper comp changes to red
-  function onDragOver(e: any, region: string) {
-    console.log("onDragOver function triggered ", region);
+  function onDragOverHandler(e: any, region: string) {
+    console.log("onDragOverHandler function triggered ", region);
     e.preventDefault();
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
     temp[region].draggedElementOver = true;
@@ -111,10 +143,22 @@ export default function DraggedBoxes() {
 
   console.log("wrapperBoxState", wrapperBoxState);
 
+  function getDataOfDraggedObj(draggedObject: any) {
+    console.log(
+      "in getDataOfDraggedObj funct., received from BoxWrapper e: ",
+      draggedObject
+    );
+    setDraggedBox(draggedObject);
+
+    // e.dataTransfer.setData("text/plain", draggedObject);
+  }
+
+  console.log("draggedBox state: ", draggedBox);
+  console.log("boxArrangement state: ", boxArrangement);
   return (
     <div className="flex-column items-center justify-center">
       <div className="flex justify-center mt-4">
-        {boxList.map((boxWrapper, index) => (
+        {boxArrangement.map((boxWrapper, index) => (
           <div
             key={index}
             onDragStart={(e) => onDragStartHandler(e, boxWrapper.region)}
@@ -125,7 +169,7 @@ export default function DraggedBoxes() {
             }
             onDragOver={
               boxWrapper.droppable
-                ? (e) => onDragOver(e, boxWrapper.region)
+                ? (e) => onDragOverHandler(e, boxWrapper.region)
                 : () => null
             }
             onDrop={(e) => onDropHandler(e, boxWrapper.region)}
@@ -137,6 +181,7 @@ export default function DraggedBoxes() {
                 .renderCounter
             } */
               boxWrapper={boxWrapper}
+              getData={getDataOfDraggedObj}
               draggableOverElement={
                 wrapperBoxState[boxWrapper.region as keyof BoxConfig]
                   .draggedElementOver
@@ -147,7 +192,7 @@ export default function DraggedBoxes() {
       </div>
       <div className="mt-[100px] p-2 w-[350px] m-auto flex-column items-center border">
         <p className=" align-middle">Contents of the Regions (for review):</p>
-        {boxList.map((boxWrapper, index) => (
+        {boxArrangement.map((boxWrapper, index) => (
           <ul key={index}>
             <strong> region - {boxWrapper.region}</strong>
             {boxWrapper.contents.map((item, sIndex) => (
