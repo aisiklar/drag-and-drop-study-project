@@ -46,8 +46,8 @@ export default function BoxWrapper(props: Props) {
       onDrop={(e: any) => onDropHandler(e)}
       className={
         draggableOverElement
-          ? "p-2 bg-red-300 text-center ml-4 min-h-[200px]"
-          : "p-2 bg-slate-300 text-center ml-4 min-h-[200px]"
+          ? "p-2 bg-red-300 text-center min-h-[200px]"
+          : "p-2 bg-slate-300 text-center min-h-[200px]"
       }
     >
       <p>
