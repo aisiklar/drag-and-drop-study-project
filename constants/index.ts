@@ -1,11 +1,12 @@
-export const topics: Topics = [
+import { StudyTopics } from "@/type";
+
+export const topics: StudyTopics = [
   {
-    topicName: "drag and drop in a table-1",
+    topicName: "drag and drop within a table",
     link: "table-1",
   },
   {
-    topicName: "drag and drop between 2 boxes",
+    topicName: "drag and drop between 3 boxes",
     link: "box",
   },
 ];
-

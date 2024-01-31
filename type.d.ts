@@ -1,7 +1,7 @@
 import { SubresourceIntegrityPlugin } from "next/dist/build/webpack/plugins/subresource-integrity-plugin";
 
-type Topic = { topicName: string; link: string };
-type Topics = Topic[];
+type StudyTopic = { topicName: string; link: string };
+type StudyTopics = StudyTopic[];
 
 type Users = User[];
 
@@ -14,6 +14,4 @@ interface User {
   website: string;
 }
 
-type HeaderColumns = string[] 
-
-
+type HeaderColumns = string[];

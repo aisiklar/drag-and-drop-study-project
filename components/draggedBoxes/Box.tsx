@@ -12,20 +12,15 @@ type DraggedType = {
 };
 
 export default function Box(props: Props) {
-  // console.log("render Box, ", props.text);
   const [beingDragged, setBeingDragged] = useState<DraggedType>({
     box: props.text,
     beingDragged: false,
   });
 
-  // console.log("beingDragged: ", beingDragged);
-
   function onDragStartHandler() {
-    console.log("in onDragStartHandler, ", props.text);
     setBeingDragged({ box: props.text, beingDragged: true });
   }
   function onDragEndHandler() {
-    console.log("in onDragEndHandler, ", props.text);
     setBeingDragged({ box: props.text, beingDragged: false });
   }
 

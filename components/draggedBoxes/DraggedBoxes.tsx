@@ -5,7 +5,6 @@ import BoxWrapper from "./BoxWrapper";
 
 type SubBoxConfig = {
   draggedElementOver: boolean;
-  renderCounter: number;
 };
 
 type BoxConfig = {
@@ -22,21 +21,20 @@ type EachBox = {
 
 type BoxList = EachBox[];
 
+// define boxConfig to define whether there is a dragged obj hovering above
 const boxConfig = {
   A: {
     draggedElementOver: false,
-    // renderCounter: 0,
   },
   B: {
     draggedElementOver: false,
-    // renderCounter: 0,
   },
   C: {
     draggedElementOver: false,
-    // renderCounter: 0,
   },
 };
 
+// define boxList to enclose region name, droppable cond and contents
 let boxList = [
   {
     region: "A",
@@ -56,11 +54,9 @@ let boxList = [
 ];
 
 export default function DraggedBoxes() {
+  // define states
   const [boxArrangement, setBoxArrangement] = useState<BoxList>(boxList);
-  const [wrapperBoxState, setWrapperBoxState] = useState<BoxConfig>(
-    JSON.parse(JSON.stringify(boxConfig))
-  );
-
+  const [wrapperBoxState, setWrapperBoxState] = useState<BoxConfig>(boxConfig);
   const [draggedBox, setDraggedBox] = useState<string>("");
 
   /* function onDragEnterHandler(e: any, region: string) {
@@ -76,42 +72,28 @@ export default function DraggedBoxes() {
   } */
 
   function onDropHandler(e: any, region: string) {
-    console.log("onDropHandler triggered, region: ", region);
-    let targetWrapperBox = boxArrangement.filter(
-      (boxWrapper) => boxWrapper.region === region
-    )[0];
-    console.log("targetWrapperBox: ", targetWrapperBox);
-
-    let sourceWrapperBox = boxArrangement.filter((wrapperBox) =>
-      wrapperBox.contents.includes(draggedBox)
-    )[0];
-    let indexOfDraggedBox = sourceWrapperBox.contents.indexOf(draggedBox);
-    console.log("indexOfDraggedBox: ", indexOfDraggedBox);
-
-    console.log("sourceWrapperBox: ", sourceWrapperBox);
-
+    // console.log("onDropHandler triggered, region: ", region);
     let temp_boxArrangement = JSON.parse(JSON.stringify(boxArrangement));
+
     temp_boxArrangement.forEach((element: EachBox) => {
       if (element.contents.includes(draggedBox)) {
+        // remove the dragged object from the contents
         let newContents = element.contents.filter(
           (item: string) => item !== draggedBox
         );
-        console.log("newContents: ", newContents);
         element.contents = newContents;
       }
       if (element.region === region) {
+        // add the dragged object to the new box
         element.contents.push(draggedBox);
       }
     });
-    console.log("temp_boxArrangement:", temp_boxArrangement);
 
     setDraggedBox("");
     setBoxArrangement(temp_boxArrangement);
   }
 
   function onDragLeaveHandler(e: any, region: string) {
-    console.log("onDragLeaveHandler function tiggered", region);
-
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
     temp[region].draggedElementOver = false;
     // temp[region].renderCounter--;
@@ -122,35 +104,19 @@ export default function DraggedBoxes() {
   // change the draggedElementOver to true for related BoxWrapper
   // so that the color of the BoxWrapper comp changes to red
   function onDragOverHandler(e: any, region: string) {
-    console.log("onDragOverHandler function triggered ", region);
     e.preventDefault();
     let temp = JSON.parse(JSON.stringify(wrapperBoxState));
     temp[region].draggedElementOver = true;
-    // temp[region].renderCounter++;
     setWrapperBoxState(temp);
   }
 
   function onDragEndHandler() {
-    console.log("onDragEndHandler triggered");
-    // console.log("boxConfig: ", boxConfig);
     // reset wrapperBoxState to its to initial state of boxConfig
     setWrapperBoxState(JSON.parse(JSON.stringify(boxConfig)));
   }
 
-  function onDragStartHandler(e: any, region: string) {
-    console.log("onDragStartHandler triggered, ", region);
-  }
-
-  console.log("wrapperBoxState", wrapperBoxState);
-
   function getDataOfDraggedObj(draggedObject: any) {
-    console.log(
-      "in getDataOfDraggedObj funct., received from BoxWrapper e: ",
-      draggedObject
-    );
     setDraggedBox(draggedObject);
-
-    // e.dataTransfer.setData("text/plain", draggedObject);
   }
   function changeDroppableCond(e: any, boxWrapper: EachBox) {
     let temp_boxArrangement = JSON.parse(JSON.stringify(boxArrangement));
@@ -163,16 +129,13 @@ export default function DraggedBoxes() {
     setBoxArrangement(temp_boxArrangement);
   }
 
-  console.log("draggedBox state: ", draggedBox);
-  console.log("boxArrangement state: ", boxArrangement);
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex justify-center mt-4">
+      <div className="flex flex-row justify-center mt-4">
         {boxArrangement.map((boxWrapper, index) => (
           <div
-            className="flex flex-col align-middle justify-center"
+            className="flex flex-col items-center justify-center mx-1"
             key={index}
-            onDragStart={(e) => onDragStartHandler(e, boxWrapper.region)}
             onDragLeave={
               boxWrapper.droppable
                 ? (e) => onDragLeaveHandler(e, boxWrapper.region)
@@ -189,18 +152,18 @@ export default function DraggedBoxes() {
             <button
               type="button"
               onClick={(e) => changeDroppableCond(e, boxWrapper)}
-              className="w-[200px] px-[10px] rounded-full bg-red-300 align-middle justify-center align-middle mb-2"
+              className={
+                boxWrapper.droppable === true
+                  ? "w-[170px] rounded bg-red-300 align-middle mb-2"
+                  : "w-[170px] rounded bg-green-300 align-middle mb-2"
+              }
             >
               {boxWrapper.droppable === true
                 ? "make it un-droppable"
                 : "make it droppable"}
             </button>
-            <div className="mr-2">
+            <div className="">
               <BoxWrapper
-                /*  key={
-                wrapperBoxState[boxWrapper.region as keyof BoxConfig]
-                .renderCounter
-              } */
                 boxWrapper={boxWrapper}
                 getData={getDataOfDraggedObj}
                 draggableOverElement={
@@ -210,19 +173,6 @@ export default function DraggedBoxes() {
               />
             </div>
           </div>
-        ))}
-      </div>
-      <div className="mt-[100px] p-2 w-[350px] m-auto flex-column items-center border">
-        <p className=" align-middle">Contents of the Regions (for review):</p>
-        {boxArrangement.map((boxWrapper, index) => (
-          <ul key={index}>
-            <strong> region - {boxWrapper.region}</strong>
-            {boxWrapper.contents.map((item, sIndex) => (
-              <ul className="ml-2" key={sIndex}>
-                box - {item}
-              </ul>
-            ))}
-          </ul>
         ))}
       </div>
     </div>
