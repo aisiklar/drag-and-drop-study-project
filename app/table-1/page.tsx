@@ -1,5 +1,6 @@
-import UsersTable from "@/components/table/UserTable";
+import UsersTable from "@/components/table/UsersTable";
 
+// fetch users from API and send to child comp as props
 export default async function TableOneHome() {
   const response = await fetch("https://jsonplaceholder.typicode.com/users", {
     method: "GET",
@@ -7,6 +8,8 @@ export default async function TableOneHome() {
 
   const users = await response.json();
 
+  // delete properties company and address to simplify the table
+  // TODO might add these deleted properties in the future.
   users.forEach((user: any) => {
     delete user.company;
     delete user.address;
