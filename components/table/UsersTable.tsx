@@ -62,6 +62,11 @@ export default function UsersTable({ users }: Props) {
     setBeingDraggedToSt({ column: "" });
   }
 
+  function onDragLeaveHandler(e, column: string) {
+    // console.log("onDragLeaveHandler triggered");
+    setBeingDraggedToSt({ column: "" });
+  }
+
   function onDragOverHandler(e: any, column: string) {
     e.preventDefault();
     let temp_beingDraggedToSt = JSON.parse(JSON.stringify(beingDraggedToSt));
@@ -117,6 +122,7 @@ export default function UsersTable({ users }: Props) {
                 }
                 draggable={true}
                 onDragStart={(e) => onDragStartHandler(e, column)}
+                onDragLeave={(e) => onDragLeaveHandler(e, column)}
                 onDragEnd={(e) => onDragEndHandler(e, column)}
                 onDragOver={(e) => onDragOverHandler(e, column)}
                 onDrop={(e) => onDropHandler(e, column)}
