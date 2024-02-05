@@ -48,23 +48,8 @@ export default function UsersTable({ users }: Props) {
     setHeaderColumns(temp_headerColumns);
   }, [users]);
 
-  // upon change of headerColumns or on mount
-  // define formatUsers, re-formatted state of users
-  useEffect(() => {
-    users.forEach((user, index) => {});
-  }, [headerColumns]);
-
-  // console.log("headerColumns:", headerColumns);
-
-  headerColumns.forEach((item, index) => {
-    // console.log(item as headerColumn);
-    // console.log(Object.keys(item));
-    // console.log((item as headerColumn)["header"]);
-    // console.log(item[header as keyof item]);
-  });
-
   function onDragStartHandler(e: any, column: string) {
-    console.log("onDragStartHandler triggered, column: ", column);
+    // console.log("onDragStartHandler triggered, column: ", column);
     let temp_beingDraggedFromSt = JSON.parse(
       JSON.stringify(beingDraggedFromSt)
     );
@@ -72,13 +57,13 @@ export default function UsersTable({ users }: Props) {
     setBeingDraggedFromSt(temp_beingDraggedFromSt);
   }
   function onDragEndHandler(e: any, column: string) {
-    console.log("onDragEndHandler triggered, column: ", column);
+    // console.log("onDragEndHandler triggered, column: ", column);
     setBeingDraggedFromSt({ column: "" });
     setBeingDraggedToSt({ column: "" });
   }
 
   function onDragOverHandler(e: any, column: string) {
-    console.log("onDragOverHandler triggered, column: ", column);
+    e.preventDefault();
     let temp_beingDraggedToSt = JSON.parse(JSON.stringify(beingDraggedToSt));
     let currentToBeforeColumnIndex = headerColumns.indexOf(column);
     temp_beingDraggedToSt = {
@@ -88,16 +73,33 @@ export default function UsersTable({ users }: Props) {
   }
 
   function onDropHandler(e: any, column: string) {
-    console.log("onDropHandler, column: ", column);
-  }
-  // log statest
-  console.log("beingDraggedFromSt: ", beingDraggedFromSt);
+    let indexOfTargetColumn = headerColumns.indexOf(column);
+    let indexOfSourceColumn = headerColumns.indexOf(beingDraggedFromSt.column);
 
-  console.log("beingDraggedToSt: ", beingDraggedToSt);
+    if (indexOfTargetColumn < indexOfSourceColumn) {
+      // modify index of source column +1
+      indexOfSourceColumn++;
+    } else {
+      // do nothing. no need to change the index of source
+    }
+
+    let temp_headerColumns = JSON.parse(JSON.stringify(headerColumns));
+    temp_headerColumns.splice(
+      indexOfTargetColumn,
+      0,
+      beingDraggedFromSt.column
+    );
+    temp_headerColumns.splice(indexOfSourceColumn, 1);
+
+    setHeaderColumns(temp_headerColumns);
+  }
+  // log states
+  // console.log("beingDraggedFromSt: ", beingDraggedFromSt);
+  // console.log("beingDraggedToSt: ", beingDraggedToSt);
 
   return (
     <>
-      <table className="w-full">
+      <table className="w-full mt-4">
         <thead>
           {/* the number of <tr></tr> can be defined from the data structure. */}
           {/* however here it is assumed fix and x2 */}
@@ -105,19 +107,19 @@ export default function UsersTable({ users }: Props) {
             {headerColumns.map((column, index) => (
               <th
                 key={index}
+                className={
+                  beingDraggedFromSt.column === column
+                    ? "px-[20px] border-x-2 border-y-2 border-x-red-400 border-t-red-400 text-center"
+                    : beingDraggedFromSt.column !== column &&
+                      beingDraggedToSt.column === column
+                    ? "px-[20px] border-x-2 border-y-2 border-x-blue-400 border-t-blue-400 text-center"
+                    : "px-[20px] border-b-2 text-center "
+                }
                 draggable={true}
                 onDragStart={(e) => onDragStartHandler(e, column)}
                 onDragEnd={(e) => onDragEndHandler(e, column)}
                 onDragOver={(e) => onDragOverHandler(e, column)}
                 onDrop={(e) => onDropHandler(e, column)}
-                className={
-                  beingDraggedFromSt.column === column
-                    ? "px-[20px] border-x-2 border-y-2 border-x-red-400 border-y-red-400 text-center"
-                    : beingDraggedFromSt.column !== column &&
-                      beingDraggedToSt.column === column
-                    ? "px-[20px] border-x-2 border-y-2 border-x-blue-400 border-y-blue-400 text-center"
-                    : "px-[20px] border-b-2 text-center "
-                }
               >
                 {column}
               </th>
