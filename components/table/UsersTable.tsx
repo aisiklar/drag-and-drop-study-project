@@ -62,6 +62,7 @@ export default function UsersTable({ users }: Props) {
     setBeingDraggedToSt({ column: "" });
   }
 
+  // TODO: add a type for e. could be any or one that is recommended. 
   function onDragLeaveHandler(e, column: string) {
     // console.log("onDragLeaveHandler triggered");
     setBeingDraggedToSt({ column: "" });
@@ -117,8 +118,8 @@ export default function UsersTable({ users }: Props) {
                     ? "px-[20px] border-x-2 border-y-2 border-x-red-400 border-t-red-400 text-center"
                     : beingDraggedFromSt.column !== column &&
                       beingDraggedToSt.column === column
-                    ? "px-[20px] border-x-2 border-y-2 border-x-blue-400 border-t-blue-400 text-center"
-                    : "px-[20px] border-b-2 text-center "
+                      ? "px-[20px] border-x-2 border-y-2 border-x-blue-400 border-t-blue-400 text-center"
+                      : "px-[20px] border-b-2 text-center "
                 }
                 draggable={true}
                 onDragStart={(e) => onDragStartHandler(e, column)}
@@ -141,18 +142,18 @@ export default function UsersTable({ users }: Props) {
                   key={cIndex}
                   className={
                     index == users.length - 1 &&
-                    beingDraggedFromSt.column === column
+                      beingDraggedFromSt.column === column
                       ? "px-[20px] border-x-2 border-x-red-400 text-center  border-y-2 border-b-red-400 "
                       : index == users.length - 1 &&
                         beingDraggedFromSt.column !== column &&
                         beingDraggedToSt.column === column
-                      ? "px-[20px] border-x-2 border-x-blue-400 text-center  border-y-2 border-b-blue-400 "
-                      : beingDraggedFromSt.column === column
-                      ? "px-[20px] border-x-2 border-x-red-400 text-center  "
-                      : beingDraggedFromSt.column !== column &&
-                        beingDraggedToSt.column === column
-                      ? "px-[20px] border-x-2 border-x-blue-400 text-center  "
-                      : "p-[10px] text-center"
+                        ? "px-[20px] border-x-2 border-x-blue-400 text-center  border-y-2 border-b-blue-400 "
+                        : beingDraggedFromSt.column === column
+                          ? "px-[20px] border-x-2 border-x-red-400 text-center  "
+                          : beingDraggedFromSt.column !== column &&
+                            beingDraggedToSt.column === column
+                            ? "px-[20px] border-x-2 border-x-blue-400 text-center  "
+                            : "p-[10px] text-center"
                   }
                 >
                   {user[column as keyof User]}
